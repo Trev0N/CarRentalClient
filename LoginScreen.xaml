@@ -1,0 +1,18 @@
+﻿<Window x:Class="CarRentalClient.LoginScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CarRentalClient"
+        mc:Ignorable="d"
+        Title="Login" FontSize="14" Height="239.453" Width="375" Background="Gray">
+    <StackPanel>
+        <Label Content="Login" Foreground="White" FontSize="25" HorizontalAlignment="Center"/>
+        <Separator></Separator>
+        <Label Content="Username" Foreground="White"/>
+        <TextBox Name="txtUsername"  FontSize="18"/>
+        <Label Content="Password" Foreground="White"/>
+        <PasswordBox Name="txtPassword"  FontSize="18"/>
+        <Button Name="btnSubmit" Click="btnSubmit_Click" Content="Submit" Margin="60 10"/>
+    </StackPanel>
+</Window>
