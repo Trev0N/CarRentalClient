@@ -8,6 +8,7 @@
         Title="CarRental" Height="450" Width="800">
     <Grid RenderTransformOrigin="0.495,0.481">
         <Label Content="CARRENTAL" RenderTransformOrigin="0.495,0.414" Margin="295,10,295,337" FontSize="36"/>
-        <TextBlock HorizontalAlignment="Left" Height="290" Margin="74,82,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Binding.SourceUpdated="TextBlock_SourceUpdated" Width="221"/>
+        <DataGrid x:Name="myDataGrid" HorizontalAlignment="Left" Height="300"  VerticalAlignment="Top" Width="410" IsReadOnly="True" RenderTransformOrigin="0.52,0.47" Margin="295,82,0,0" FontSize="15" />
+
     </Grid>
 </Window>
