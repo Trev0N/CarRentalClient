@@ -51,23 +51,52 @@ namespace CarRentalClient
         {
             InitializeComponent();
         }
+        static string GetRole(string url, string Token)
+        {
+
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+            using (var client = new HttpClient())
+            {
+                HttpContent httpContent = null;
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
+                client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
+                var response = client.PostAsync(url, httpContent).Result;
+                return response.Content.ReadAsStringAsync().Result;
+            }
+
+
+        }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
             String response = GetToken("http://localhost:8080/api/login", txtUsername.Text, txtPassword.Password);
-            String token;
+            String Token;
             if (response.Contains("access_token"))
             {
-                token = response.Substring(17, 36);
-                MainWindow mainWindow = new MainWindow(token);
-                mainWindow.Show();
-                mainWindow.InitializeComponent();
-                mainWindow.TextBlockFormatting();
-                this.Close();
+
+                Token = response.Substring(17, 36);
+                if (GetRole("http://localhost:8080/user/isadmin", Token) == "true")
+                {
+                    MainWindow mainWindow = new MainWindow(Token);
+                    mainWindow.Show();
+                    mainWindow.InitializeComponent();
+                    mainWindow.TextBlockFormatting();
+                    this.Close();
+                }
+                else
+                {
+                    UserPanel userPanel = new UserPanel(Token);
+                    userPanel.Show();
+                    userPanel.InitializeComponent();
+                    userPanel.InitializeDataGrid();
+                    this.Close();
+                }
             }
             else
                 MessageBox.Show("Wrong login or password");
             
         }
+
+       
     }
 }
