@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Windows;
@@ -41,6 +42,8 @@ namespace CarRentalClient
             {
                 listCar.Items.Add(carReadyToRent.Mark + " " + carReadyToRent.Model);
             }
+
+            
         }
 
         public void InitializeDataGrid()
@@ -48,6 +51,10 @@ namespace CarRentalClient
             List<CarReadyToRent> carReadyToRents;
             carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
             myDataGrid.ItemsSource = carReadyToRents;
+            if (carReadyToRents.Count == 0)
+            {
+                rentCar.IsEnabled = false;
+            }
         }
 
 
@@ -81,47 +88,52 @@ namespace CarRentalClient
         private void Button_Rent(object sender, RoutedEventArgs e)
         {
 
-            String data = dateRent.SelectedDate.Value.ToString();
+            String data = dateRent.SelectedDate.Value.ToShortDateString();
             String car = listCar.SelectedItem.ToString();
             List<CarReadyToRent> carReadyToRents;
             carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
             long id;
+            String json = "{" +
+                "\"rentEndDate\": \""+ data+"T00:00:00.000Z" + "\"" +
+                "}";
+
             foreach(CarReadyToRent carReadyToRent in carReadyToRents)
             {
                 if(carReadyToRent.Mark +" "+ carReadyToRent.Model == car)
                 {
                     id = carReadyToRent.ID;
-                    PostRentCar("http://localhost:8080/rent/car/" + id, Token, data);
+                    PostRentCar("http://localhost:8080/rent/car/" + id, Token, json);
+                    listCar.Items.Clear();
+                    listCar.Items.Refresh();
+                    InitializeDataGrid();
                     break;
 
                 }
             }
+            mainMenu.IsSelected = true;
 
-            
 
         }
+       
 
-
-        private String PostRentCar(String url, String token,String date)
+        private void PostRentCar(String url, String token,String json)
         {
-
-            var pairs = new List<KeyValuePair<string, string>>
-                    {
-                        new KeyValuePair<string, string>( "rentEndDate", date )
-
-                    };
-            
-            var content = new FormUrlEncodedContent(pairs);
-            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-            using (var client = new HttpClient())
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.Headers.Add("Authorization", "Bearer " + Token);
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                client.DefaultRequestHeaders.Add("ContentType", "application/json");                
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-                var response = client.PostAsync(url, content);
-
-
-                return response.AsyncState.ToString();
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
             }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+            }
+            
         }
     }
 }
