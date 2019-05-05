@@ -75,9 +75,13 @@ namespace CarRentalClient
         }
 
 
+
+
         private void Button_Get_Rents(object sender, RoutedEventArgs e)
         {
-
+            List<RentedCars> rentedCars;
+            rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
+            dataGridRentings.ItemsSource = rentedCars;
         }
 
         private void Button_Return_Car(object sender, RoutedEventArgs e)
@@ -88,13 +92,18 @@ namespace CarRentalClient
         private void Button_Rent(object sender, RoutedEventArgs e)
         {
 
-            String data = dateRent.SelectedDate.Value.ToShortDateString();
+            int day = dateRent.SelectedDate.Value.Day;
+            int month = dateRent.SelectedDate.Value.Month;
+            int year = dateRent.SelectedDate.Value.Year;
+            DateTime dateTime = dateRent.SelectedDate.Value.ToUniversalTime();
             String car = listCar.SelectedItem.ToString();
+
+
             List<CarReadyToRent> carReadyToRents;
             carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
             long id;
             String json = "{" +
-                "\"rentEndDate\": \""+ data+"T00:00:00.000Z" + "\"" +
+                "\"rentEndDate\": \""+dateTime.ToString("yyyy-MM-dd")+ "T00:00:00.000Z" + "\"" +
                 "}";
 
             foreach(CarReadyToRent carReadyToRent in carReadyToRents)
