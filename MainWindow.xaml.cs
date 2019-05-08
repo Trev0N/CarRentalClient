@@ -34,6 +34,34 @@ namespace CarRentalClient
             this.Token = Token;
         }
 
+        public MainWindow()
+        {
+            InitializeComponent();
+            TextBlockFormatting();
+        }
+
+
+        public void TextBlockFormatting()
+        {
+            CenterWindowOnScreen();
+            List<Car> car;
+            car = JsonConvert.DeserializeObject<List<Car>>(GetCars("http://localhost:8080/car/", Token));
+            myDataGrid.ItemsSource = car;
+        }
+
+        private void CenterWindowOnScreen()
+        {
+            double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
+            double screenHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
+            double windowWidth = this.Width;
+            double windowHeight = this.Height;
+            this.Left = (screenWidth / 2) - (windowWidth / 2);
+            this.Top = (screenHeight / 2) - (windowHeight / 2);
+        }
+
+
+
+
         static string GetCars(string url, string Token)
         {
 
@@ -50,37 +78,7 @@ namespace CarRentalClient
        
 
 
-        public MainWindow()
-        {
-
-
-            InitializeComponent();
-            TextBlockFormatting();
-        }
-
-
-        public void TextBlockFormatting()
-        {
-
-
-
-           
-                myTextBox.Text = "ADMIN";
-          
-
-
-            List<Car> car;
-
-
-                car = JsonConvert.DeserializeObject<List<Car>>(GetCars("http://localhost:8080/car/", Token));
-                myDataGrid.ItemsSource = car;
-
-          
-
-
-
-
-        }
+        
  
 
         private void Button_Create_Car(object sender, RoutedEventArgs e)
@@ -114,6 +112,27 @@ namespace CarRentalClient
         }
 
 
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteRequest("http://localhost:8080/sign-out", Token);
+            LoginScreen login = new LoginScreen();
+            login.InitializeComponent();
+            login.Show();
+            this.Close();
+        }
 
+        //REQUESTS
+
+        static string DeleteRequest(string url, string Token)
+        {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
+                var response = client.DeleteAsync(url).Result;
+                String responseee = response.Content.ReadAsStringAsync().Result;
+                return response.Content.ReadAsStringAsync().Result;
+            }
+        }
     }
 }

@@ -24,7 +24,11 @@ namespace CarRentalClient
 
     public partial class LoginScreen : Window
     {
-        
+        public LoginScreen()
+        {
+            InitializeComponent();
+            CenterWindowOnScreen();
+        }
         static string GetToken(string url, string userName, string password)
         {
             
@@ -47,10 +51,19 @@ namespace CarRentalClient
             
 
         }
-        public LoginScreen()
+
+        private void CenterWindowOnScreen()
         {
-            InitializeComponent();
+            double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
+            double screenHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
+            double windowWidth = this.Width;
+            double windowHeight = this.Height;
+            this.Left = (screenWidth / 2) - (windowWidth / 2);
+            this.Top = (screenHeight / 2) - (windowHeight / 2);
         }
+
+
+        
         static string GetRole(string url, string Token)
         {
 
@@ -97,6 +110,12 @@ namespace CarRentalClient
             
         }
 
-       
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterScreen registerScreen = new RegisterScreen();
+            registerScreen.InitializeComponent();
+            registerScreen.Show();
+            this.Close();
+        }
     }
 }

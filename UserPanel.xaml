@@ -16,12 +16,13 @@
                     <Button Content="Return car" x:Name="returnCar" HorizontalAlignment="Center" VerticalAlignment="Top" Width="128" Margin="81,214,577,0" Height="22" Opacity="1" Click="Button_Return_Car"/>
                     <DataGrid x:Name="myDataGrid" HorizontalAlignment="Left" Height="300"  VerticalAlignment="Top" Width="410" IsReadOnly="True" RenderTransformOrigin="0.52,0.47" Margin="319,65,0,0" FontSize="15" Opacity="1" />
                     <TextBlock HorizontalAlignment="Left" TextAlignment="Center" FontSize="16" Margin="319,32,0,0" TextWrapping="Wrap" Text="Car ready to rent" VerticalAlignment="Top" Height="33" Width="410"/>
+                    <Button x:Name="logoutButton"  Content="Log out" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="680,10,0,0" Height="22" Click="LogoutButton_Click"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="rentTab" Header="RentCar" Opacity="0" IsEnabled="False">
                 <Grid Background="#FFE5E5E5">
                     <DatePicker x:Name="dateRent" HorizontalAlignment="Left" Margin="434,60,0,0" VerticalAlignment="Top" Height="24" Width="200"/>
-                    <ListBox x:Name="listCar" HorizontalAlignment="Left" Height="24" Margin="100,60,0,0" VerticalAlignment="Top" Width="200"/>
+                    <ComboBox x:Name="listCar" HorizontalAlignment="Left" Height="24" Margin="100,60,0,0" VerticalAlignment="Top" Width="200"/>
                     <Button x:Name="rentButton" Content="Rent" HorizontalAlignment="Left" Margin="280,154,0,0" VerticalAlignment="Top" Width="179" Height="32" Click="Button_Rent"/>
                     <TextBlock x:Name="rentedText" HorizontalAlignment="Left" Opacity="0" TextAlignment="Center" FontSize="20" Margin="280,216,0,0" TextWrapping="Wrap" Text="RENTED" VerticalAlignment="Top" Height="34" Width="179"/>
                 </Grid>
@@ -30,6 +31,7 @@
                 <Grid>
                     <DataGrid x:Name="dataGridRentings" HorizontalAlignment="Left" Height="246" VerticalAlignment="Top" Width="677" Margin="59,32,0,0"/>
                     <Button x:Name="returnMainMenu" Content="Return" HorizontalAlignment="Left" Margin="314,308,0,0" VerticalAlignment="Top" Width="147" Height="31" Click="ReturnMainMenu_Click"/>
+                    <CheckBox x:Name="checkBoxAllRentings" Content="Only not finished rentings" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="59,308,0,0" Height="31" Width="164" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
 
                 </Grid>
             </TabItem>
