@@ -125,12 +125,13 @@ namespace CarRentalClient
         {
             List<RentedCars> rentedCars;
             rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
-            List<RentedCars> actualRentedCars = null;
+            List<RentedCars> actualRentedCars = new List<RentedCars>();
             foreach(RentedCars rented in rentedCars)
             {
                 if(rented.RentEndDate > DateTimeOffset.Now)
                 {
-                    actualRentedCars.Add(rented);
+                    if(rented!=null)
+                        actualRentedCars.Add(rented);
                 }
             }
 

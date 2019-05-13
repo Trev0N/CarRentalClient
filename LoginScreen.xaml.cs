@@ -82,6 +82,11 @@ namespace CarRentalClient
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
+            login();
+            
+        }
+        public void login()
+        {
             String response = GetToken("http://localhost:8080/api/login", txtUsername.Text, txtPassword.Password);
             String Token;
             if (response.Contains("access_token"))
@@ -107,7 +112,6 @@ namespace CarRentalClient
             }
             else
                 MessageBox.Show("Wrong login or password");
-            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
