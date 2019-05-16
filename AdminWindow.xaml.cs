@@ -45,7 +45,7 @@ namespace CarRentalClient
         {
             CenterWindowOnScreen();
             List<Car> car;
-            car = JsonConvert.DeserializeObject<List<Car>>(GetCars("http://localhost:8080/car/", Token));
+            car = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
             myDataGrid.ItemsSource = car;
         }
 
@@ -62,33 +62,24 @@ namespace CarRentalClient
 
 
 
-        static string GetCars(string url, string Token)
-        {
-
-            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-                var response = client.GetAsync(url).Result;
-                return response.Content.ReadAsStringAsync().Result;
-            }
-
-
-        }
        
+       //ADD GARAGE TAB
         private void InitializeAddGarageTab()
         {
             List<GarageList> garageList;
-            GetCars("http://localhost:8080/garage/", Token);
-            garageList =JsonConvert.DeserializeObject<List<GarageList>>(GetCars("http://localhost:8080/garage/", Token));
+            GetRequest("http://localhost:8080/garage/", Token);
+            garageList =JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
 
 
             addGarageDataGrid.ItemsSource=garageList;
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
 
-
+        //END
 
         private void Button_Create_Car(object sender, RoutedEventArgs e)
         {
@@ -134,6 +125,22 @@ namespace CarRentalClient
 
         //REQUESTS
 
+
+        static string GetRequest(string url, string Token)
+        {
+
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
+                var response = client.GetAsync(url).Result;
+                return response.Content.ReadAsStringAsync().Result;
+            }
+
+
+        }
+
+
         static string DeleteRequest(string url, string Token)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
@@ -146,9 +153,6 @@ namespace CarRentalClient
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        
     }
 }
