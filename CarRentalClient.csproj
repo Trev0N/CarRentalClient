@@ -60,6 +60,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CarReadyToRent.cs" />
+    <Compile Include="GarageList.cs" />
     <Compile Include="RegisterScreen.xaml.cs">
       <DependentUpon>RegisterScreen.xaml</DependentUpon>
     </Compile>

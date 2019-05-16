@@ -20,8 +20,16 @@
                 <Button x:Name="logoutButton"  Content="Log out" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="680,10,0,0" Height="22" Click="LogoutButton_Click"/>
             </Grid>
         </TabItem>
-        <TabItem Header="TabItem">
-            <Grid Background="#FFE5E5E5"/>
+        <TabItem x:Name="addGarageTab" Header="AddGarage" Visibility="Visible">
+            <Grid Background="#FFE5E5E5">
+                <DataGrid x:Name="addGarageDataGrid" HorizontalAlignment="Left" Height="322" Margin="413,30,0,0" VerticalAlignment="Top" Width="329"/>
+                <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="95,87,0,0"/>
+                <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="95,150,0,0"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Height="29" Width="120" Margin="95,58,0,0"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Address" VerticalAlignment="Top" Height="29" Width="120" Margin="95,121,0,0"/>
+                <Button Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="95,194,0,0" Click="Button_Click"/>
+
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>

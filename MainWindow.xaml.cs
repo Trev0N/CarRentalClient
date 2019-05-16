@@ -76,10 +76,19 @@ namespace CarRentalClient
 
         }
        
+        private void InitializeAddGarageTab()
+        {
+            List<GarageList> garageList;
+            GetCars("http://localhost:8080/garage/", Token);
+            garageList =JsonConvert.DeserializeObject<List<GarageList>>(GetCars("http://localhost:8080/garage/", Token));
 
 
-        
- 
+            addGarageDataGrid.ItemsSource=garageList;
+        }
+
+
+
+
 
         private void Button_Create_Car(object sender, RoutedEventArgs e)
         {
@@ -108,7 +117,9 @@ namespace CarRentalClient
 
         private void Button_Add_Garage(object sender, RoutedEventArgs e)
         {
-
+            addGarageTab.IsEnabled = true;
+            addGarageTab.IsSelected = true;
+            InitializeAddGarageTab();
         }
 
 
@@ -133,6 +144,11 @@ namespace CarRentalClient
                 String responseee = response.Content.ReadAsStringAsync().Result;
                 return response.Content.ReadAsStringAsync().Result;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
