@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using System.IO;
 
 namespace CarRentalClient
 
@@ -76,7 +77,20 @@ namespace CarRentalClient
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            String Name = addGarageName.Text;
+            String Address = addGarageAddress.Text;
 
+            if (Name != null && Address != null)
+            {
+                String json = "{" +
+                                 "\"address\": \"" + Address + "\"," +
+                                 "\"name\": \""+Name+"\""
+                                + "}";
+                PostRequest("http://localhost:8080/garage/create", Token, json);
+                InitializeAddGarageTab();
+            }
+            else
+                MessageBox.Show("You have to complete all fields. ");
         }
 
         //END
@@ -140,6 +154,28 @@ namespace CarRentalClient
 
         }
 
+        private void PostRequest(String url, String token, String json)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.Headers.Add("Authorization", "Bearer " + Token);
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+
+            {
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+            }
+
+        }
 
         static string DeleteRequest(string url, string Token)
         {
