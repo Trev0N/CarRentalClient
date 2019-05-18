@@ -80,7 +80,7 @@ namespace CarRentalClient
             String Name = addGarageName.Text;
             String Address = addGarageAddress.Text;
 
-            if (Name != null && Address != null)
+            if (Name != null && Address != null && Name != "" && Address !="")
             {
                 String json = "{" +
                                  "\"address\": \"" + Address + "\"," +
