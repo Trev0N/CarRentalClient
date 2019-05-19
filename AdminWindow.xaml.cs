@@ -29,7 +29,6 @@ namespace CarRentalClient
         private const char NewChar = (char)32;
         private String Token;
 
-
         public MainWindow(string Token)
         {
             this.Token = Token;
@@ -80,13 +79,40 @@ namespace CarRentalClient
             String Name = addGarageName.Text;
             String Address = addGarageAddress.Text;
 
+            List<GarageList> garageList;
+            GetRequest("http://localhost:8080/garage/", Token);
+            garageList = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+
+            
+
             if (Name != null && Address != null && Name != "" && Address !="")
             {
+                                             
                 String json = "{" +
                                  "\"address\": \"" + Address + "\"," +
                                  "\"name\": \""+Name+"\""
                                 + "}";
-                PostRequest("http://localhost:8080/garage/create", Token, json);
+
+                foreach (GarageList garage in garageList)
+                {
+
+                    if (addGarageDataGrid.SelectedItem != null && addGarageDataGrid.SelectedItem.ToString().Equals(garage.ToString()))
+                    {
+                        PutRequest("http://localhost:8080/garage/edit/" + garage.ID, Token, json);
+                        break;
+                    }
+                    else
+                    {
+                        System.Windows.MessageBoxResult message = System.Windows.MessageBox.Show("Are you sure that you want create new garage?","Create garage confirmation", System.Windows.MessageBoxButton.YesNo);
+                        if (message == MessageBoxResult.Yes)
+                        {
+                            PostRequest("http://localhost:8080/garage/create", Token, json);
+                            break;
+                        }
+                        else
+                            break;
+                    }
+                }
                 InitializeAddGarageTab();
             }
             else
@@ -112,13 +138,15 @@ namespace CarRentalClient
 
         private void Button_Delete_Garage(object sender, RoutedEventArgs e)
         {
+            deleteGarageTab.IsEnabled = true;
+            deleteGarageTab.IsSelected = true;
+            List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
 
+
+            deleteGarageComboBox.ItemsSource = garageLists;
         }
 
-        private void Button_Edit_Garage(object sender, RoutedEventArgs e)
-        {
 
-        }
 
         private void Button_Add_Garage(object sender, RoutedEventArgs e)
         {
@@ -177,6 +205,35 @@ namespace CarRentalClient
 
         }
 
+
+        private void PutRequest(String url, String token, String json)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "PUT";
+            httpWebRequest.Headers.Add("Authorization", "Bearer " + Token);
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+
+            {
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+            try {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+            }
+
+            }
+            catch(WebException e)
+            {
+                MessageBox.Show("Garage name isn't available, please change it!");
+            }
+            }
+
         static string DeleteRequest(string url, string Token)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
@@ -189,6 +246,33 @@ namespace CarRentalClient
             }
         }
 
-        
+
+
+        private void AddGarageDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string text=null;
+            if (addGarageDataGrid.SelectedItem != null)
+            {
+                text = addGarageDataGrid.SelectedItem.ToString();
+            }
+            List<GarageList> garageList;
+            garageList = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+            foreach(GarageList garage in garageList)
+            {
+                if (garage.ToString().Equals(text))
+                {
+                    addGarageName.Text = garage.Name;
+                    addGarageAddress.Text = garage.Address;
+                    break;
+                }
+
+            }
+        }
+
+        private void Delete_Garage_Click(object sender, RoutedEventArgs e)
+        {
+            String garage = deleteGarageComboBox.SelectedItem.ToString();
+            Console.WriteLine(garage);
+        }
     }
 }

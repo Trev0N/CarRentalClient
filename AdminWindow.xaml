@@ -11,24 +11,28 @@
             <Grid RenderTransformOrigin="0.495,0.481" Margin="0,0,-8,-29">
                 <DataGrid x:Name="myDataGrid" HorizontalAlignment="Left" Height="300"  VerticalAlignment="Top" Width="410" IsReadOnly="True" RenderTransformOrigin="0.52,0.47" Margin="295,82,0,0" FontSize="15" Opacity="1" />
                 <TextBlock x:Name="adminText_1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Your cars" TextAlignment="Center" VerticalAlignment="Top" Margin="295,56,0,0" Height="21" Width="410" FontSize="17" Opacity="1"/>
-                <Button Content="Add garage" x:Name="addGarage" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Margin="62,101,0,0" Click="Button_Add_Garage" Opacity="1"/>
-                <Button Content="Edit garage" x:Name="editGarage" HorizontalAlignment="Left" Margin="62,140,0,0" VerticalAlignment="Top" Width="115" Click="Button_Edit_Garage" Opacity="1"/>
-                <Button Content="Delete garage" x:Name="deleteGarage" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" RenderTransformOrigin="1.369,6.988" Margin="62,179,0,0" Click="Button_Delete_Garage" Opacity="1"/>
+                <Button Content="Add/Edit garage" x:Name="addGarage" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Margin="62,101,0,0" Click="Button_Add_Garage" Opacity="1"/>
+                <Button Content="Delete garage" x:Name="deleteGarage" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" RenderTransformOrigin="1.369,6.988" Margin="62,141,0,0" Click="Button_Delete_Garage" Opacity="1"/>
                 <Button Content="Add car" x:Name="addCar" HorizontalAlignment="Left" Margin="62,215,0,0" VerticalAlignment="Top" Width="115" Click="Button_Create_Car" Opacity="1"/>
                 <Button Content="Edit car" x:Name="editCar" HorizontalAlignment="Left" Margin="62,251,0,0" VerticalAlignment="Top" Width="115" Click="Button_Edit_Car" Opacity="1"/>
                 <Button Content="Delete car" x:Name="deleteCar" HorizontalAlignment="Left" Margin="62,288,0,0" VerticalAlignment="Top" Width="115" Click="Button_Delete_Car" Opacity="1"/>
                 <Button x:Name="logoutButton"  Content="Log out" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="680,10,0,0" Height="22" Click="LogoutButton_Click"/>
             </Grid>
         </TabItem>
-        <TabItem x:Name="addGarageTab" Header="AddGarage" Visibility="Visible">
+        <TabItem x:Name="addGarageTab" Header="Add/Edit Garage" Visibility="Visible" IsEnabled="True">
             <Grid Background="#FFE5E5E5">
-                <DataGrid x:Name="addGarageDataGrid" HorizontalAlignment="Left" Height="322" Margin="413,30,0,0" VerticalAlignment="Top" Width="329"/>
+                <DataGrid x:Name="addGarageDataGrid" HorizontalAlignment="Left" Height="322" Margin="413,30,0,0" VerticalAlignment="Top" Width="329" SelectionChanged="AddGarageDataGrid_SelectionChanged"/>
                 <TextBox x:Name="addGarageName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Margin="95,87,0,0"/>
                 <TextBox x:Name="addGarageAddress" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Margin="95,150,0,0"/>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Height="29" Width="232" Margin="95,58,0,0"/>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Address" VerticalAlignment="Top" Height="29" Width="232" Margin="95,121,0,0"/>
                 <Button Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="146,195,0,0" Click="Button_Click"/>
-
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="deleteGarageTab" Header="Delete Garage" Visibility="Visible" IsEnabled="True">
+            <Grid Background="#FFE5E5E5">
+                <Button x:Name="deleteGarageButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="166" Margin="478,163,0,0" Click="Delete_Garage_Click"/>
+                <ComboBox x:Name="deleteGarageComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="243" Margin="101,163,0,0" />
             </Grid>
         </TabItem>
     </TabControl>
