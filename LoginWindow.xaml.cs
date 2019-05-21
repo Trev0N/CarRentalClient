@@ -44,9 +44,15 @@ namespace CarRentalClient
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("Authorization", "Basic YnJvd3Nlcjo=");
-                var response = client.PostAsync(url, content).Result;
-                          
-                return response.Content.ReadAsStringAsync().Result;
+                try
+                {
+                    var response = client.PostAsync(url, content).Result;
+                    return response.Content.ReadAsStringAsync().Result;
+                } catch (Exception e)
+            {
+                MessageBox.Show("Check internet connection, or server problem");
+            }
+                return null;
             }
             
 
@@ -89,6 +95,7 @@ namespace CarRentalClient
         {
             String response = GetToken("http://localhost:8080/api/login", txtUsername.Text, txtPassword.Password);
             String Token;
+            if(response!=null)
             if (response.Contains("access_token"))
             {
 

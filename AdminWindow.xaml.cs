@@ -92,7 +92,7 @@ namespace CarRentalClient
                                  "\"address\": \"" + Address + "\"," +
                                  "\"name\": \""+Name+"\""
                                 + "}";
-
+                if(garageList.Count>0)
                 foreach (GarageList garage in garageList)
                 {
 
@@ -113,6 +113,8 @@ namespace CarRentalClient
                             break;
                     }
                 }
+                else
+                    PostRequest("http://localhost:8080/garage/create", Token, json);
                 InitializeAddGarageTab();
             }
             else
@@ -121,9 +123,33 @@ namespace CarRentalClient
 
         //END
 
+
+            //Add/edit car
+
+        public void InitializeAddCarTab()
+        {
+            List<Car> cars = null;
+            if (GetRequest("http://localhost:8080/car/", Token).Contains("mark"))
+            {
+                 cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            }
+            carDataGrid.ItemsSource = cars;
+
+            List<GarageList> garageLists = null;
+            if((GetRequest("http://localhost:8080/garage/", Token).Contains("name")));
+                {
+                garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+            }
+            garageComboBox.ItemsSource = garageLists;
+
+        }
+
+
         private void Button_Create_Car(object sender, RoutedEventArgs e)
         {
-
+            addCarTab.IsEnabled = true;
+            addCarTab.IsSelected = true;
+            InitializeAddCarTab();
         }
 
         private void Button_Edit_Car(object sender, RoutedEventArgs e)
@@ -175,7 +201,7 @@ namespace CarRentalClient
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-                var response = client.GetAsync(url).Result;
+                    var response = client.GetAsync(url).Result;
                 return response.Content.ReadAsStringAsync().Result;
             }
 
@@ -273,6 +299,73 @@ namespace CarRentalClient
         {
             String garage = deleteGarageComboBox.SelectedItem.ToString();
             Console.WriteLine(garage);
+        }
+
+        private void AddCarButton_Click(object sender, RoutedEventArgs e)
+        { if (registerName.Text != "" && mark.Text != "" && model.Text != "" && engine.Text != "" && power.Text != "" && garageComboBox.Text != "")
+            {
+                String register = registerName.Text;
+                String markk = mark.Text;
+                String modell = model.Text;
+                String enginee = engine.Text;
+                String powerr = power.Text;
+                List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+                String garageNames = garageComboBox.Text;
+                long garageId = -1;
+                foreach (GarageList garage in garageLists)
+                {
+                    if (garage.ToString().Equals(garageNames))
+                    {
+                        garageId = garage.ID;
+                        break;
+                    }
+                }
+
+                String Json = "{" +
+      "\"engine\": " + enginee + "," +
+      "\"garageId\": " + garageId + "," +
+      "\"mark\": \"" + markk + "\"," +
+      "\"model\": \"" + modell + "\"," +
+      "\"power\": " + powerr + "," +
+      "\"registerName\": \"" + register + "\"" +
+    "}";
+
+
+                PostRequest("http://localhost:8080/car/create", Token, Json);
+                InitializeAddCarTab();
+
+            }
+            else
+                MessageBox.Show("You have to complete all fields");
+        }
+
+        private void CarDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            List<Car> cars = null;
+            if (GetRequest("http://localhost:8080/car/", Token).Contains("mark"))
+            {
+                cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            }
+            List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+
+            foreach (Car car in cars)
+            {
+                if (car.ToString().Equals(carDataGrid.SelectedItem.ToString()))
+                {
+                    registerName.Text = car.RegisterName;
+                    mark.Text=car.Mark;
+                    model.Text=car.Model;
+                    engine.Text=car.Engine.ToString();
+                    power.Text=car.Power.ToString();
+                    foreach(GarageList garageList in garageLists)
+                    {
+                        if (garageList.ID == car.GarageID)
+                        {
+                            garageComboBox.SelectedItem = garageList.ToString();
+                        }
+                    }
+                }
+            }
         }
     }
 }

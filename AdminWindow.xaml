@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="CarRental" Height="450" Width="800">
     <TabControl HorizontalAlignment="Left" Height="418" VerticalAlignment="Top" Width="790">
-        <TabItem Header="MainMenu">
+        <TabItem x:Name="MainMenu" Header="MainMenu">
             <Grid RenderTransformOrigin="0.495,0.481" Margin="0,0,-8,-29">
                 <DataGrid x:Name="myDataGrid" HorizontalAlignment="Left" Height="300"  VerticalAlignment="Top" Width="410" IsReadOnly="True" RenderTransformOrigin="0.52,0.47" Margin="295,82,0,0" FontSize="15" Opacity="1" />
                 <TextBlock x:Name="adminText_1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Your cars" TextAlignment="Center" VerticalAlignment="Top" Margin="295,56,0,0" Height="21" Width="410" FontSize="17" Opacity="1"/>
@@ -19,7 +19,7 @@
                 <Button x:Name="logoutButton"  Content="Log out" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="680,10,0,0" Height="22" Click="LogoutButton_Click"/>
             </Grid>
         </TabItem>
-        <TabItem x:Name="addGarageTab" Header="Add/Edit Garage" Visibility="Visible" IsEnabled="True">
+        <TabItem x:Name="addGarageTab" Header="Add/Edit Garage" Visibility="Visible" IsEnabled="False">
             <Grid Background="#FFE5E5E5">
                 <DataGrid x:Name="addGarageDataGrid" HorizontalAlignment="Left" Height="322" Margin="413,30,0,0" VerticalAlignment="Top" Width="329" SelectionChanged="AddGarageDataGrid_SelectionChanged"/>
                 <TextBox x:Name="addGarageName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Margin="95,87,0,0"/>
@@ -29,10 +29,32 @@
                 <Button Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="146,195,0,0" Click="Button_Click"/>
             </Grid>
         </TabItem>
-        <TabItem x:Name="deleteGarageTab" Header="Delete Garage" Visibility="Visible" IsEnabled="True">
+        <TabItem x:Name="deleteGarageTab" Header="Delete Garage" Visibility="Visible" IsEnabled="False">
             <Grid Background="#FFE5E5E5">
                 <Button x:Name="deleteGarageButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="166" Margin="478,163,0,0" Click="Delete_Garage_Click"/>
                 <ComboBox x:Name="deleteGarageComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="243" Margin="101,163,0,0" />
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="addCarTab" Header="Add/Edit Car" Visibility="Visible" IsEnabled="False">
+            <Grid Background="#FFE5E5E5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="747*"/>
+                </Grid.ColumnDefinitions>
+                <DataGrid x:Name="carDataGrid" HorizontalAlignment="Left" Height="259" VerticalAlignment="Top" Width="320" Margin="378,53,0,0" Grid.Column="1" SelectionChanged="CarDataGrid_SelectionChanged"/>
+                <Button x:Name="addCarButton" Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="157" Margin="88,319,0,0" Height="21" Grid.Column="1" Click="AddCarButton_Click"/>
+                <TextBox x:Name="registerName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="157" Margin="88,73,0,0" Grid.Column="1"/>
+                <TextBox x:Name="mark" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="157" Margin="88,119,0,0" Grid.Column="1"/>
+                <TextBox x:Name="model" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="157" Margin="88,160,0,0" Grid.Column="1"/>
+                <TextBox x:Name="engine" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="157" Margin="88,203,0,0" Grid.Column="1"/>
+                <TextBox x:Name="power" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="157" Margin="88,244,0,0" Grid.Column="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Register Name" VerticalAlignment="Top" Margin="88,53,0,0" Height="15" Width="157" Grid.Column="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Mark" VerticalAlignment="Top" Margin="88,99,0,0" Height="15" Width="157" Grid.Column="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Model" VerticalAlignment="Top" Margin="88,140,0,0" Height="15" Width="157" Grid.Column="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Engine Capacity in cm3" VerticalAlignment="Top" Margin="88,183,0,0" Height="15" Width="157" Grid.Column="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Power in HP" VerticalAlignment="Top" Margin="88,226,0,0" Height="15" Width="157" Grid.Column="1"/>
+                <ComboBox x:Name="garageComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="157" Margin="88,287,0,0" Grid.Column="1" Height="22"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Garage" VerticalAlignment="Top" Margin="88,267,0,0" Height="15" Width="157" Grid.Column="1"/>
             </Grid>
         </TabItem>
     </TabControl>

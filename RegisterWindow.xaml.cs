@@ -37,23 +37,32 @@ namespace CarRentalClient
             this.Left = (screenWidth / 2) - (windowWidth / 2);
             this.Top = (screenHeight / 2) - (windowHeight / 2);
         }
-        static void PostRegister(string url, string Json)
+        static Boolean PostRegister(string url, string Json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            try
             {
-                streamWriter.Write(Json);
-                streamWriter.Flush();
-                streamWriter.Close();
-            }
+                using (
+                    var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(Json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
 
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
 
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    var result = streamReader.ReadToEnd();
+                }
+                return true;
+            }catch(Exception e)
             {
-                var result = streamReader.ReadToEnd();
+                MessageBox.Show("Check your internet connection, or server error");
+                return false;
             }
         }
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -67,14 +76,16 @@ namespace CarRentalClient
  + " \"recaptcha\": \"ABCDEFGH\""
  +"}";
 
-            PostRegister("http://localhost:8080/user/sign-in", Json);
+            if (PostRegister("http://localhost:8080/user/sign-in", Json).Equals(true))
+            {
 
-            LoginScreen loginScreen = new LoginScreen();
-            loginScreen.InitializeComponent();
-            loginScreen.txtUsername = login;
-            loginScreen.txtPassword = password;
-            loginScreen.login();
-            this.Close();
+                LoginScreen loginScreen = new LoginScreen();
+                loginScreen.InitializeComponent();
+                loginScreen.txtUsername = login;
+                loginScreen.txtPassword = password;
+                loginScreen.login();
+                this.Close();
+            }
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

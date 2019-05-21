@@ -32,5 +32,10 @@ namespace CarRentalClient
             Power = power;
             GarageID = garageID;
         }
+
+        public override string ToString()
+        {
+            return "ID=" + ID + ", RegisterName=" + RegisterName + ", Mark=" + Mark + ", Model=" + Model + ", Engine=" + Engine + ", Power=" + Power + ", GarageID=" + GarageID;
+        }
     }
 }
