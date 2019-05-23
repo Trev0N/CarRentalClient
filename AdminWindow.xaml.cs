@@ -63,7 +63,7 @@ namespace CarRentalClient
 
 
        
-       //ADD GARAGE TAB
+       //ADD/EDIT GARAGE TAB
         private void InitializeAddGarageTab()
         {
             List<GarageList> garageList;
@@ -159,7 +159,20 @@ namespace CarRentalClient
 
         private void Button_Delete_Car(object sender, RoutedEventArgs e)
         {
+            deleteCarTab.IsEnabled = true;
+            deleteCarTab.IsSelected = true;
+            InitializeDeleteCarComboBox();
+        }
 
+        public void InitializeDeleteCarComboBox()
+        {
+            deleteCarComboBox.Items.Clear();
+            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            foreach(Car car in cars)
+            {
+                deleteCarComboBox.Items.Add(car.RegisterName + " " + car.Mark + " " + car.Model);
+            }
+            
         }
 
         private void Button_Delete_Garage(object sender, RoutedEventArgs e)
@@ -167,7 +180,6 @@ namespace CarRentalClient
             deleteGarageTab.IsEnabled = true;
             deleteGarageTab.IsSelected = true;
             List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
-
 
             deleteGarageComboBox.ItemsSource = garageLists;
         }
@@ -254,7 +266,7 @@ namespace CarRentalClient
             }
 
             }
-            catch(WebException e)
+            catch(WebException)
             {
                 MessageBox.Show("Garage name isn't available, please change it!");
             }
@@ -298,7 +310,18 @@ namespace CarRentalClient
         private void Delete_Garage_Click(object sender, RoutedEventArgs e)
         {
             String garage = deleteGarageComboBox.SelectedItem.ToString();
-            Console.WriteLine(garage);
+            List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+            foreach(GarageList garageList in garageLists)
+            {
+                if (garageList.ToString().Equals(garage))
+                {
+                    DeleteRequest("http://localhost:8080/garage/delete/" + garageList.ID, Token);
+                    List<GarageList> garageListToComboBox = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+
+                    deleteGarageComboBox.ItemsSource = garageListToComboBox;
+                    break;
+                }
+            }
         }
 
         private void AddCarButton_Click(object sender, RoutedEventArgs e)
@@ -329,11 +352,34 @@ namespace CarRentalClient
       "\"power\": " + powerr + "," +
       "\"registerName\": \"" + register + "\"" +
     "}";
-
-
-                PostRequest("http://localhost:8080/car/create", Token, Json);
-                InitializeAddCarTab();
-
+                if (carDataGrid.SelectedItem != null)
+                { 
+                    List<Car> cars=null;
+                    if (GetRequest("http://localhost:8080/car/", Token).Contains("mark"))
+                    {
+                        cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+                    }
+                    foreach(Car car in cars)
+                    {
+                        if (car.RegisterName == register)
+                        {
+                            PostRequest("http://localhost:8080/car/edit/" + car.ID, Token, Json);
+                            InitializeAddCarTab();
+                            break;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    System.Windows.MessageBoxResult message = System.Windows.MessageBox.Show("Are you sure that you want create new car?", "Create car confirmation", System.Windows.MessageBoxButton.YesNo);
+                    if (message == MessageBoxResult.Yes)
+                    {
+                        PostRequest("http://localhost:8080/car/create", Token, Json);
+                        InitializeAddCarTab();                        
+                    }                    
+                }
+                    
             }
             else
                 MessageBox.Show("You have to complete all fields");
@@ -350,6 +396,7 @@ namespace CarRentalClient
 
             foreach (Car car in cars)
             {
+                if(car!=null&& carDataGrid.SelectedItem!=null)
                 if (car.ToString().Equals(carDataGrid.SelectedItem.ToString()))
                 {
                     registerName.Text = car.RegisterName;
@@ -366,6 +413,27 @@ namespace CarRentalClient
                     }
                 }
             }
+        }
+
+        private void DeleteCarButton_Click(object sender, RoutedEventArgs e)
+        {
+            String carString = deleteCarComboBox.SelectedItem.ToString();
+
+            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            foreach (Car car in cars)
+            {
+                if (car.RegisterName + " " + car.Mark + " " + car.Model==carString)
+                {
+                    DeleteRequest("http://localhost:8080/car/delete/" + car.ID, Token);
+                    InitializeDeleteCarComboBox();
+                    break;
+                }
+            }
+        }
+
+        private void SetCarDetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

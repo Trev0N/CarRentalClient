@@ -70,40 +70,50 @@ namespace CarRentalClient
         {
             if (dateRent.SelectedDate != null || listCar.SelectedItem != null)
             {
-                
-           
-
-            int day = dateRent.SelectedDate.Value.Day;
-            int month = dateRent.SelectedDate.Value.Month;
-            int year = dateRent.SelectedDate.Value.Year;
-            DateTime dateTime = dateRent.SelectedDate.Value.ToUniversalTime();
-            String car = listCar.SelectedItem.ToString();
 
 
-            List<CarReadyToRent> carReadyToRents;
-            carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
-            long id;
-            String json = "{" +
-                "\"rentEndDate\": \"" + dateTime.ToString("yyyy-MM-dd") + "T00:00:00.000Z" + "\"" +
-                "}";
 
-            foreach (CarReadyToRent carReadyToRent in carReadyToRents)
-            {
-                if (carReadyToRent.Mark + " " + carReadyToRent.Model == car)
+                int day = dateRent.SelectedDate.Value.Day;
+                int month = dateRent.SelectedDate.Value.Month;
+                int year = dateRent.SelectedDate.Value.Year;
+                DateTime dateTime = dateRent.SelectedDate.Value.ToUniversalTime();
+                String car = listCar.SelectedItem.ToString();
+
+
+                List<CarReadyToRent> carReadyToRents;
+                carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
+                long id;
+                String json = "{" +
+                    "\"rentEndDate\": \"" + dateTime.ToString("yyyy-MM-dd") + "T00:00:00.000Z" + "\"" +
+                    "}";
+                if (dateTime < DateTimeOffset.Now)
                 {
-                    id = carReadyToRent.ID;
-                    PostRentCar("http://localhost:8080/rent/car/" + id, Token, json);
+                    MessageBox.Show("Choose correct data");
                     listCar.Items.Clear();
                     listCar.Items.Refresh();
-                    InitializeDataGrid();
-                    break;
-
                 }
-            }
+                else
+                    foreach (CarReadyToRent carReadyToRent in carReadyToRents)
+                    {
+                        if (carReadyToRent.Mark + " " + carReadyToRent.Model == car)
+                        {
+                            id = carReadyToRent.ID;
+                            PostRentCar("http://localhost:8080/rent/car/" + id, Token, json);
+                            listCar.Items.Clear();
+                            listCar.Items.Refresh();
+                            InitializeDataGrid();
+                            break;
+
+                        }
+                    }
 
             }
             else
-                MessageBox.Show("You have to choose car and date.");
+            {
+                MessageBox.Show("You have to choose car and correct date.");
+                listCar.Items.Clear();
+                listCar.Items.Refresh();
+            }
 
             InitializeDataGrid();
             mainMenu.IsSelected = true;
