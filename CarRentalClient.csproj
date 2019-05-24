@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="UtilClasses\CarDetail.cs" />
     <Compile Include="UtilClasses\CarReadyToRent.cs" />
     <Compile Include="UtilClasses\GarageList.cs" />
     <Compile Include="RegisterWindow.xaml.cs">

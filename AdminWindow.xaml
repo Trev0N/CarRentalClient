@@ -67,10 +67,18 @@
                 <ComboBox x:Name="deleteCarComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="243" Margin="101,163,0,0" />
             </Grid>
         </TabItem>
-        <TabItem x:Name="setCarDetailsTab" Header="Set Car Details">
+        <TabItem x:Name="setCarDetailsTab" Header="Set Car Details" Height="22" VerticalAlignment="Top">
             <Grid>
-                <DataGrid x:Name="setCarDetailsDataGrid" HorizontalAlignment="Left" Height="291" VerticalAlignment="Top" Width="319" Margin="407,43,0,0"/>
-
+                <DataGrid x:Name="setCarDetailsDataGrid" HorizontalAlignment="Left" Height="291" VerticalAlignment="Top" Width="319" Margin="407,43,0,0" SelectionChanged="SetCarDetailsDataGrid_SelectionChanged"/>
+                <ComboBox  x:Name="setCarDetailCarStatus" HorizontalAlignment="Left" Margin="70,43,0,0" VerticalAlignment="Top" Width="179"/>
+                <ComboBox x:Name="setCarDetailCar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="179" Margin="70,90,0,0"/>
+                <TextBox x:Name="setCarDetailsMileage" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="179" Margin="70,140,0,0"/>
+                <TextBox x:Name="setCarDetailsPrice" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="179" Margin="70,187,0,0"/>
+                <Button x:Name="setCarDetails" Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="179" Margin="70,235,0,0" Click="SetCarDetails_Click"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Car status" VerticalAlignment="Top" Margin="70,27,0,0" Width="179"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Car" VerticalAlignment="Top" Margin="70,74,0,0" Width="179"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Mileage in km" VerticalAlignment="Top" Margin="70,124,0,0" Width="179"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Price for 24h" VerticalAlignment="Top" Margin="70,171,0,0" Width="179"/>
             </Grid>
         </TabItem>
     </TabControl>

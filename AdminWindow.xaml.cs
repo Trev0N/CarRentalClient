@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using System.IO;
+using CarRentalClient.UtilClasses;
 
 namespace CarRentalClient
 
@@ -433,7 +434,61 @@ namespace CarRentalClient
 
         private void SetCarDetailsButton_Click(object sender, RoutedEventArgs e)
         {
+            setCarDetailsTab.IsEnabled = true;
+            setCarDetailsTab.IsSelected = true;
+            InitailizeSetCarDetailDataGrid();
+        }
 
+        public void InitailizeSetCarDetailDataGrid()
+        {
+            setCarDetailCarStatus.Items.Clear();
+            setCarDetailCarStatus.Items.Add(Status.NEED_ATTENTION);
+            setCarDetailCarStatus.Items.Add(Status.NO_FUEL);
+            setCarDetailCarStatus.Items.Add(Status.ON_SERVICE);
+            setCarDetailCarStatus.Items.Add(Status.READY_TO_RENT);
+            setCarDetailCarStatus.Items.Add(Status.RENTED);
+            setCarDetailCarStatus.Items.Add(Status.SERVICE_PLEASE);
+            setCarDetailsDataGrid.ItemsSource = null;
+            List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest("http://localhost:8080/cardetail/", Token));
+            setCarDetailsDataGrid.ItemsSource =carDetails;
+            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            setCarDetailCar.Items.Clear();
+            foreach(Car car in cars)
+            {
+                setCarDetailCar.Items.Add(car.Mark + " " + car.Model + " " + car.RegisterName);
+            }           
+        }
+
+        private void SetCarDetails_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SetCarDetailsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            long carid = -1;
+            List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest("http://localhost:8080/cardetail/", Token));
+            foreach(CarDetail carDetail in carDetails)
+            {
+                if (setCarDetailsDataGrid.SelectedItem != null)
+                {
+                    if (setCarDetailsDataGrid.SelectedItem.ToString() == carDetail.ToString())
+                    {
+                        carid = carDetail.CarID;
+                    }
+                }
+            }
+
+
+            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            foreach (Car car in cars)
+            {
+                if(car.ID == carid)
+                {
+                    setCarDetailCar.SelectedItem = car.Mark + " " + car.Model + " " + car.RegisterName;
+                }
+            }
+            
         }
     }
 }
