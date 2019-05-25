@@ -12,16 +12,21 @@ namespace CarRentalClient.UtilClasses
 
         public decimal price { get; }
 
-        public Status status { get; }
+        public Status status { get; set; }
 
         public long mileage { get; }
 
-        public CarDetail(long carId, Status status, decimal price, long mileage)
+        public CarDetail(long carId, Status statusEnum, decimal price, long mileage)
         {
             this.CarID = carId;
             this.price = price;
             this.mileage = mileage;
-            this.status = status;
+            this.status = statusEnum;
+        }
+
+        public override string ToString()
+        {
+            return CarID.ToString();
         }
     }
 

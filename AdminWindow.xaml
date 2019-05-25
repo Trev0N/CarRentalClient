@@ -67,7 +67,7 @@
                 <ComboBox x:Name="deleteCarComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="243" Margin="101,163,0,0" />
             </Grid>
         </TabItem>
-        <TabItem x:Name="setCarDetailsTab" Header="Set Car Details" Height="22" VerticalAlignment="Top">
+        <TabItem x:Name="setCarDetailsTab" Header="Set Car Details" Height="22" VerticalAlignment="Top" Visibility="Hidden" IsEnabled="False">
             <Grid>
                 <DataGrid x:Name="setCarDetailsDataGrid" HorizontalAlignment="Left" Height="291" VerticalAlignment="Top" Width="319" Margin="407,43,0,0" SelectionChanged="SetCarDetailsDataGrid_SelectionChanged"/>
                 <ComboBox  x:Name="setCarDetailCarStatus" HorizontalAlignment="Left" Margin="70,43,0,0" VerticalAlignment="Top" Width="179"/>

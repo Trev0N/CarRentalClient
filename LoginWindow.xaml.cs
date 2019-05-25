@@ -48,7 +48,7 @@ namespace CarRentalClient
                 {
                     var response = client.PostAsync(url, content).Result;
                     return response.Content.ReadAsStringAsync().Result;
-                } catch (Exception e)
+                } catch (Exception)
             {
                 MessageBox.Show("Check internet connection, or server problem");
             }

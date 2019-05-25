@@ -272,6 +272,27 @@ namespace CarRentalClient
                 MessageBox.Show("Garage name isn't available, please change it!");
             }
             }
+        private void PutRequestCar(String url, String token, String json)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "PUT";
+            httpWebRequest.Headers.Add("Authorization", "Bearer " + Token);
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+
+            {
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                var result = streamReader.ReadToEnd();
+                }
+        }
 
         static string DeleteRequest(string url, string Token)
         {
@@ -461,7 +482,47 @@ namespace CarRentalClient
 
         private void SetCarDetails_Click(object sender, RoutedEventArgs e)
         {
+            long carid=-1;
+            Boolean exists=false;
 
+            if (setCarDetailsPrice.Text != null && setCarDetailsMileage.Text != null && setCarDetailCarStatus.SelectedItem != null && setCarDetailCar.SelectedItem != null)
+            {
+                List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+                foreach (Car car in cars)
+                {
+                    if (car.Mark + " " + car.Model + " " + car.RegisterName == setCarDetailCar.SelectedItem.ToString())
+                    {
+                        carid = car.ID;
+                        break;
+                    }
+                }
+                List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest("http://localhost:8080/cardetail/", Token));
+                foreach (CarDetail carDetail in carDetails)
+                {
+                    if (carDetail.CarID == carid)
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+                String Json = "{" +
+          "\"carId\": " + carid + "," +
+          "\"mileage\": " + setCarDetailsMileage.Text + "," +
+          "\"price\": " + setCarDetailsPrice.Text + "," +
+          "\"statusEnum\":\"" + setCarDetailCarStatus.SelectedItem.ToString() + "\"" +
+          "}";
+                if (exists)
+                {
+                    PutRequestCar("http://localhost:8080/cardetail/update", Token, Json);
+                }
+                else
+                {
+                    PostRequest("http://localhost:8080/cardetail/create", Token, Json);
+                }
+                InitailizeSetCarDetailDataGrid();
+            }
+            else
+                MessageBox.Show("You have to complete all fields");
         }
 
         private void SetCarDetailsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -475,20 +536,24 @@ namespace CarRentalClient
                     if (setCarDetailsDataGrid.SelectedItem.ToString() == carDetail.ToString())
                     {
                         carid = carDetail.CarID;
+                        setCarDetailCarStatus.SelectedItem = carDetail.status;
+                        setCarDetailsMileage.Text = carDetail.mileage.ToString();
+                        setCarDetailsPrice.Text = carDetail.price.ToString();
+                        break;
+
                     }
+
                 }
             }
-
-
             List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
             foreach (Car car in cars)
             {
                 if(car.ID == carid)
                 {
                     setCarDetailCar.SelectedItem = car.Mark + " " + car.Model + " " + car.RegisterName;
+                    break;
                 }
             }
-            
         }
     }
 }
