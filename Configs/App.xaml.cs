@@ -13,5 +13,11 @@ namespace CarRentalClient
     /// </summary>
     public partial class App : Application
     {
+        App()
+        {
+            // Pause to show the splash screen for 3 seconds
+            System.Threading.Thread.Sleep(1500);
+        }
+
     }
 }

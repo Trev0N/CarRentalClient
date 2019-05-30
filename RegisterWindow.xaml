@@ -1,0 +1,24 @@
+﻿<Window x:Class="CarRentalClient.RegisterScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CarRentalClient"
+        mc:Ignorable="d"
+        Title="RegisterScreen" Height="450" Width="800">
+    <Grid>
+        <TextBox x:Name="firstName" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" VerticalAlignment="Top" Width="152" Margin="326,50,0,0"/>
+        <TextBox x:Name="lastName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="152" Margin="326,107,0,0"/>
+        <TextBox x:Name="mail" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" VerticalAlignment="Top" Width="152" Margin="326,169,0,0"/>
+        <TextBox x:Name="login" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" VerticalAlignment="Top" Width="152" Margin="326,239,0,0"/>
+        <PasswordBox x:Name="password" HorizontalAlignment="Left" VerticalAlignment="Top" Width="152" Margin="326,297,0,0" Height="24"/>
+        <Label Content="First Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="326,19,0,0" Width="152"/>
+        <Label Content="Last Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="326,76,0,0" Width="152"/>
+        <Label Content="Mail" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="326,138,0,0" Width="152"/>
+        <Label Content="Login" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="326,208,0,0" Width="152"/>
+        <Label Content="Password" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="326,266,0,0" Width="152"/>
+        <Button Content="Register" HorizontalAlignment="Left" VerticalAlignment="Top" Width="152" Margin="326,346,0,0" Click="Button_Click"/>
+        <Button Content="Back" HorizontalAlignment="Left" Margin="34,346,0,0" VerticalAlignment="Top" Width="90" Click="Button_Click_1"/>
+
+    </Grid>
+</Window>

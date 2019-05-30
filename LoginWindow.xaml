@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarRentalClient"
         mc:Ignorable="d"
-        Title="Login" FontSize="14" Height="239.453" Width="375" Background="Gray">
+        Title="Login" FontSize="14" Height="268.814" Width="375" Background="Gray">
     <StackPanel>
         <Label Content="Login" Foreground="White" FontSize="25" HorizontalAlignment="Center"/>
         <Separator></Separator>
@@ -14,5 +14,7 @@
         <Label Content="Password" Foreground="White"/>
         <PasswordBox Name="txtPassword"  FontSize="18"/>
         <Button Name="btnSubmit" Click="btnSubmit_Click" Content="Submit" Margin="60 10"/>
+        <Separator></Separator>
+        <Button Content="Register" Height="22" Margin="10,0,0,0" HorizontalAlignment="Left" Width="93" Click="Button_Click"/>
     </StackPanel>
 </Window>
