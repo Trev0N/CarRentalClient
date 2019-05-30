@@ -16,19 +16,35 @@ using System.Windows.Shapes;
 
 namespace CarRentalClient
 {
-    /// <summary>
-    /// Interaction logic for LoginScreen.xaml
-    /// </summary>
-    /// 
-    
 
+
+    /// <summary>
+    /// Okno logowania
+    /// Zawiera wszystkie potrzebne metody do zalogowania sie do serwisu
+    /// </summary>
     public partial class LoginScreen : Window
     {
+
+        public String address = "https://carrental-wsiz.herokuapp.com/";
+
+
+        /// <summary>
+        /// Pusty konstruktor klasy inicjalizujący potrzebne komponenty i centrujący okno na środku ekranu.
+        /// </summary>
         public LoginScreen()
         {
             InitializeComponent();
             CenterWindowOnScreen();
         }
+
+
+        /// <summary>
+        /// Metoda która wysyła zapytanie do serwera aby uzyskać autoryzacje.
+        /// </summary>
+        /// <param name="url">Ścieżka do naszego serwera</param>
+        /// <param name="userName">Nazwa użytkownika</param>
+        /// <param name="password">Hasło użytkownika</param>
+        /// <returns>Zwraca string token</returns>
         static string GetToken(string url, string userName, string password)
         {
             
@@ -93,14 +109,16 @@ namespace CarRentalClient
         }
         public void login()
         {
-            String response = GetToken("http://localhost:8080/api/login", txtUsername.Text, txtPassword.Password);
+            String response = GetToken(address + "api/login", txtUsername.Text, txtPassword.Password);
+            //String response = GetToken("http://localhost:8080/api/login", txtUsername.Text, txtPassword.Password);
             String Token;
             if(response!=null)
             if (response.Contains("access_token"))
             {
 
                 Token = response.Substring(17, 36);
-                if (GetRole("http://localhost:8080/user/isadmin", Token) == "true")
+               if (GetRole(address+"user/isadmin", Token) == "true")
+              //if (GetRole("http://localhost:8080/user/isadmin", Token) == "true")
                 {
                     MainWindow mainWindow = new MainWindow(Token);
                     mainWindow.Show();

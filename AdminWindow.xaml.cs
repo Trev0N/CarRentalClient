@@ -22,6 +22,9 @@ using CarRentalClient.UtilClasses;
 namespace CarRentalClient
 
 {
+
+
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -29,6 +32,8 @@ namespace CarRentalClient
     {
         private const char NewChar = (char)32;
         private String Token;
+        private const string address = "https://carrental-wsiz.herokuapp.com/";
+
 
         public MainWindow(string Token)
         {
@@ -45,12 +50,20 @@ namespace CarRentalClient
         public void TextBlockFormatting()
         {
             CenterWindowOnScreen();
-            List<Car> car;
-            car = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            List<Car> car = RequestToListCar();
             myDataGrid.ItemsSource = car;
         }
 
-        private void CenterWindowOnScreen()
+        public List<Car> RequestToListCar()
+        {
+            if (GetRequest(address + "car/", Token).Contains("mark"))
+                return JsonConvert.DeserializeObject<List<Car>>(GetRequest(address + "car/", Token));
+            else
+                return null;
+        }
+
+
+        public void CenterWindowOnScreen()
         {
             double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
             double screenHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
@@ -60,31 +73,30 @@ namespace CarRentalClient
             this.Top = (screenHeight / 2) - (windowHeight / 2);
         }
 
-
-
+        public List<GarageList> RequestToGarageList()
+        {
+            if (GetRequest(address + "garage/", Token).Contains("name"))
+                return JsonConvert.DeserializeObject<List<GarageList>>(GetRequest(address + "garage/", Token));
+            else
+                return null;
+        }
+    
 
        
        //ADD/EDIT GARAGE TAB
-        private void InitializeAddGarageTab()
+        public void InitializeAddGarageTab()
         {
-            List<GarageList> garageList;
-            GetRequest("http://localhost:8080/garage/", Token);
-            garageList =JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
-
-
+            List<GarageList> garageList = RequestToGarageList();
             addGarageDataGrid.ItemsSource=garageList;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void Button_Click(object sender, RoutedEventArgs e)
         {
             String Name = addGarageName.Text;
             String Address = addGarageAddress.Text;
 
-            List<GarageList> garageList;
-            GetRequest("http://localhost:8080/garage/", Token);
-            garageList = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
 
-            
+            List<GarageList> garageList = RequestToGarageList();
 
             if (Name != null && Address != null && Name != "" && Address !="")
             {
@@ -93,21 +105,28 @@ namespace CarRentalClient
                                  "\"address\": \"" + Address + "\"," +
                                  "\"name\": \""+Name+"\""
                                 + "}";
-                if(garageList.Count>0)
+                if(garageList!=null)
                 foreach (GarageList garage in garageList)
                 {
 
                     if (addGarageDataGrid.SelectedItem != null && addGarageDataGrid.SelectedItem.ToString().Equals(garage.ToString()))
                     {
-                        PutRequest("http://localhost:8080/garage/edit/" + garage.ID, Token, json);
-                        break;
+                            try
+                            {
+                                PutRequest(address+"garage/edit/" + garage.ID, Token, json);
+                            }
+                            catch (WebException)
+                            {
+                                MessageBox.Show("Garage name isn't available, please change it!");
+                            }
+                            break;
                     }
                     else
                     {
                         System.Windows.MessageBoxResult message = System.Windows.MessageBox.Show("Are you sure that you want create new garage?","Create garage confirmation", System.Windows.MessageBoxButton.YesNo);
                         if (message == MessageBoxResult.Yes)
                         {
-                            PostRequest("http://localhost:8080/garage/create", Token, json);
+                            PostRequest(address+"garage/create", Token, json);
                             break;
                         }
                         else
@@ -115,7 +134,8 @@ namespace CarRentalClient
                     }
                 }
                 else
-                    PostRequest("http://localhost:8080/garage/create", Token, json);
+                    PostRequest(address+"garage/create", Token, json);
+                
                 InitializeAddGarageTab();
             }
             else
@@ -129,36 +149,24 @@ namespace CarRentalClient
 
         public void InitializeAddCarTab()
         {
-            List<Car> cars = null;
-            if (GetRequest("http://localhost:8080/car/", Token).Contains("mark"))
-            {
-                 cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
-            }
+             List<Car> cars = RequestToListCar();
             carDataGrid.ItemsSource = cars;
 
-            List<GarageList> garageLists = null;
-            if((GetRequest("http://localhost:8080/garage/", Token).Contains("name")));
-                {
-                garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
-            }
+            List<GarageList> garageLists = RequestToGarageList();
             garageComboBox.ItemsSource = garageLists;
 
         }
 
 
-        private void Button_Create_Car(object sender, RoutedEventArgs e)
+        public void Button_Create_Car(object sender, RoutedEventArgs e)
         {
             addCarTab.IsEnabled = true;
             addCarTab.IsSelected = true;
             InitializeAddCarTab();
         }
 
-        private void Button_Edit_Car(object sender, RoutedEventArgs e)
-        {
 
-        }
-
-        private void Button_Delete_Car(object sender, RoutedEventArgs e)
+        public void Button_Delete_Car(object sender, RoutedEventArgs e)
         {
             deleteCarTab.IsEnabled = true;
             deleteCarTab.IsSelected = true;
@@ -168,26 +176,29 @@ namespace CarRentalClient
         public void InitializeDeleteCarComboBox()
         {
             deleteCarComboBox.Items.Clear();
-            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
-            foreach(Car car in cars)
+            List<Car> cars = RequestToListCar();
+            if (cars != null)
             {
-                deleteCarComboBox.Items.Add(car.RegisterName + " " + car.Mark + " " + car.Model);
+                foreach (Car car in cars)
+                {
+                    deleteCarComboBox.Items.Add(car.RegisterName + " " + car.Mark + " " + car.Model);
+                }
             }
             
         }
 
-        private void Button_Delete_Garage(object sender, RoutedEventArgs e)
+        public void Button_Delete_Garage(object sender, RoutedEventArgs e)
         {
             deleteGarageTab.IsEnabled = true;
             deleteGarageTab.IsSelected = true;
-            List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+            List<GarageList> garageLists = RequestToGarageList();
 
             deleteGarageComboBox.ItemsSource = garageLists;
         }
 
 
 
-        private void Button_Add_Garage(object sender, RoutedEventArgs e)
+        public void Button_Add_Garage(object sender, RoutedEventArgs e)
         {
             addGarageTab.IsEnabled = true;
             addGarageTab.IsSelected = true;
@@ -195,9 +206,9 @@ namespace CarRentalClient
         }
 
 
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        public void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            DeleteRequest("http://localhost:8080/sign-out", Token);
+            DeleteRequest(address+"sign-out", Token);
             LoginScreen login = new LoginScreen();
             login.InitializeComponent();
             login.Show();
@@ -207,21 +218,22 @@ namespace CarRentalClient
         //REQUESTS
 
 
-        static string GetRequest(string url, string Token)
+        public static string GetRequest(string url, string Token)
         {
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-                    var response = client.GetAsync(url).Result;
+
+                var response = client.GetAsync(url).Result;
                 return response.Content.ReadAsStringAsync().Result;
             }
 
 
         }
 
-        private void PostRequest(String url, String token, String json)
+        public void PostRequest(String url, String token, String json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.ContentType = "application/json";
@@ -245,7 +257,7 @@ namespace CarRentalClient
         }
 
 
-        private void PutRequest(String url, String token, String json)
+        public void PutRequest(String url, String token, String json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.ContentType = "application/json";
@@ -258,41 +270,13 @@ namespace CarRentalClient
                 streamWriter.Flush();
                 streamWriter.Close();
             }
-            try {
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
 
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
                 var result = streamReader.ReadToEnd();
             }
-
             }
-            catch(WebException)
-            {
-                MessageBox.Show("Garage name isn't available, please change it!");
-            }
-            }
-        private void PutRequestCar(String url, String token, String json)
-        {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "PUT";
-            httpWebRequest.Headers.Add("Authorization", "Bearer " + Token);
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-
-            {
-                streamWriter.Write(json);
-                streamWriter.Flush();
-                streamWriter.Close();
-            }
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                var result = streamReader.ReadToEnd();
-                }
-        }
 
         static string DeleteRequest(string url, string Token)
         {
@@ -332,13 +316,13 @@ namespace CarRentalClient
         private void Delete_Garage_Click(object sender, RoutedEventArgs e)
         {
             String garage = deleteGarageComboBox.SelectedItem.ToString();
-            List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+            List<GarageList> garageLists = RequestToGarageList();
             foreach(GarageList garageList in garageLists)
             {
                 if (garageList.ToString().Equals(garage))
                 {
-                    DeleteRequest("http://localhost:8080/garage/delete/" + garageList.ID, Token);
-                    List<GarageList> garageListToComboBox = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+                    DeleteRequest(address+"garage/delete/" + garageList.ID, Token);
+                    List<GarageList> garageListToComboBox = RequestToGarageList();
 
                     deleteGarageComboBox.ItemsSource = garageListToComboBox;
                     break;
@@ -354,7 +338,7 @@ namespace CarRentalClient
                 String modell = model.Text;
                 String enginee = engine.Text;
                 String powerr = power.Text;
-                List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+                List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest(address+"garage/", Token));
                 String garageNames = garageComboBox.Text;
                 long garageId = -1;
                 foreach (GarageList garage in garageLists)
@@ -376,16 +360,12 @@ namespace CarRentalClient
     "}";
                 if (carDataGrid.SelectedItem != null)
                 { 
-                    List<Car> cars=null;
-                    if (GetRequest("http://localhost:8080/car/", Token).Contains("mark"))
-                    {
-                        cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
-                    }
+                    List<Car> cars= RequestToListCar();
                     foreach(Car car in cars)
                     {
-                        if (car.RegisterName == register)
+                        if (carDataGrid.SelectedItem.ToString()==car.ToString())
                         {
-                            PostRequest("http://localhost:8080/car/edit/" + car.ID, Token, Json);
+                            PostRequest(address+"car/edit/" + car.ID, Token, Json);
                             InitializeAddCarTab();
                             break;
                         }
@@ -397,7 +377,7 @@ namespace CarRentalClient
                     System.Windows.MessageBoxResult message = System.Windows.MessageBox.Show("Are you sure that you want create new car?", "Create car confirmation", System.Windows.MessageBoxButton.YesNo);
                     if (message == MessageBoxResult.Yes)
                     {
-                        PostRequest("http://localhost:8080/car/create", Token, Json);
+                        PostRequest(address+"car/create", Token, Json);
                         InitializeAddCarTab();                        
                     }                    
                 }
@@ -409,12 +389,9 @@ namespace CarRentalClient
 
         private void CarDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            List<Car> cars = null;
-            if (GetRequest("http://localhost:8080/car/", Token).Contains("mark"))
-            {
-                cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
-            }
-            List<GarageList> garageLists = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+
+            List<Car> cars = RequestToListCar();
+            List<GarageList> garageLists = RequestToGarageList();
 
             foreach (Car car in cars)
             {
@@ -441,12 +418,12 @@ namespace CarRentalClient
         {
             String carString = deleteCarComboBox.SelectedItem.ToString();
 
-            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            List<Car> cars = RequestToListCar();
             foreach (Car car in cars)
             {
                 if (car.RegisterName + " " + car.Mark + " " + car.Model==carString)
                 {
-                    DeleteRequest("http://localhost:8080/car/delete/" + car.ID, Token);
+                    DeleteRequest(address+"car/delete/" + car.ID, Token);
                     InitializeDeleteCarComboBox();
                     break;
                 }
@@ -470,9 +447,9 @@ namespace CarRentalClient
             setCarDetailCarStatus.Items.Add(Status.RENTED);
             setCarDetailCarStatus.Items.Add(Status.SERVICE_PLEASE);
             setCarDetailsDataGrid.ItemsSource = null;
-            List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest("http://localhost:8080/cardetail/", Token));
+            List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest(address+"cardetail/", Token));
             setCarDetailsDataGrid.ItemsSource =carDetails;
-            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            List<Car> cars = RequestToListCar();
             setCarDetailCar.Items.Clear();
             foreach(Car car in cars)
             {
@@ -487,7 +464,7 @@ namespace CarRentalClient
 
             if (setCarDetailsPrice.Text != null && setCarDetailsMileage.Text != null && setCarDetailCarStatus.SelectedItem != null && setCarDetailCar.SelectedItem != null)
             {
-                List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+                List<Car> cars = RequestToListCar();
                 foreach (Car car in cars)
                 {
                     if (car.Mark + " " + car.Model + " " + car.RegisterName == setCarDetailCar.SelectedItem.ToString())
@@ -496,7 +473,7 @@ namespace CarRentalClient
                         break;
                     }
                 }
-                List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest("http://localhost:8080/cardetail/", Token));
+                List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest(address+"cardetail/", Token));
                 foreach (CarDetail carDetail in carDetails)
                 {
                     if (carDetail.CarID == carid)
@@ -513,11 +490,11 @@ namespace CarRentalClient
           "}";
                 if (exists)
                 {
-                    PutRequestCar("http://localhost:8080/cardetail/update", Token, Json);
+                    PutRequest(address+"cardetail/update", Token, Json);
                 }
                 else
                 {
-                    PostRequest("http://localhost:8080/cardetail/create", Token, Json);
+                    PostRequest(address+"cardetail/create", Token, Json);
                 }
                 InitailizeSetCarDetailDataGrid();
             }
@@ -528,7 +505,7 @@ namespace CarRentalClient
         private void SetCarDetailsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             long carid = -1;
-            List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest("http://localhost:8080/cardetail/", Token));
+            List<CarDetail> carDetails = JsonConvert.DeserializeObject<List<CarDetail>>(GetRequest(address+"cardetail/", Token));
             foreach(CarDetail carDetail in carDetails)
             {
                 if (setCarDetailsDataGrid.SelectedItem != null)
@@ -545,7 +522,7 @@ namespace CarRentalClient
 
                 }
             }
-            List<Car> cars = JsonConvert.DeserializeObject<List<Car>>(GetRequest("http://localhost:8080/car/", Token));
+            List<Car> cars = RequestToListCar();
             foreach (Car car in cars)
             {
                 if(car.ID == carid)

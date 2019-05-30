@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalClient
 {
-    class Car
+    public class Car
     {
         public long ID { get; set; }
 

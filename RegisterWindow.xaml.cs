@@ -59,7 +59,7 @@ namespace CarRentalClient
                     var result = streamReader.ReadToEnd();
                 }
                 return true;
-            }catch(Exception e)
+            }catch(Exception)
             {
                 MessageBox.Show("Check your internet connection, or server error");
                 return false;
