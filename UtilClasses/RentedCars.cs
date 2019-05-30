@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalClient
 {
-    class RentedCars
+    public class RentedCars
     {
         public long IDRent;
 

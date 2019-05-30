@@ -22,6 +22,7 @@ namespace CarRentalClient
     /// </summary>
     public partial class RegisterScreen : Window
     {
+        private const string address = "https://carrental-wsiz.herokuapp.com/";
         public RegisterScreen()
         {
             InitializeComponent();
@@ -76,7 +77,7 @@ namespace CarRentalClient
  + " \"recaptcha\": \"ABCDEFGH\""
  +"}";
 
-            if (PostRegister("http://localhost:8080/user/sign-in", Json).Equals(true))
+            if (PostRegister(address+"user/sign-in", Json).Equals(true))
             {
 
                 LoginScreen loginScreen = new LoginScreen();

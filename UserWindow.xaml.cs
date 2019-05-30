@@ -14,7 +14,7 @@ namespace CarRentalClient
     public partial class UserPanel : Window
     {
         private String Token;
-
+        private const string address = "https://carrental-wsiz.herokuapp.com/";
         public UserPanel(string token)
         {
             Token = token;
@@ -29,7 +29,7 @@ namespace CarRentalClient
         {
             CenterWindowOnScreen();
             List<CarReadyToRent> carReadyToRents;
-            carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
+            carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent(address+"car/readytorent", Token));
             myDataGrid.ItemsSource = carReadyToRents;
             if (carReadyToRents.Count == 0)
                 rentCar.IsEnabled = false;
@@ -56,7 +56,7 @@ namespace CarRentalClient
 
 
             List<CarReadyToRent> carReadyToRents;
-            carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
+            carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent(address+"car/readytorent", Token));
 
             foreach (CarReadyToRent carReadyToRent in carReadyToRents)
             {
@@ -81,7 +81,7 @@ namespace CarRentalClient
 
 
                 List<CarReadyToRent> carReadyToRents;
-                carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent("http://localhost:8080/car/readytorent", Token));
+                carReadyToRents = JsonConvert.DeserializeObject<List<CarReadyToRent>>(GetCarsReadyToRent(address+"car/readytorent", Token));
                 long id;
                 String json = "{" +
                     "\"rentEndDate\": \"" + dateTime.ToString("yyyy-MM-dd") + "T00:00:00.000Z" + "\"" +
@@ -98,7 +98,7 @@ namespace CarRentalClient
                         if (carReadyToRent.Mark + " " + carReadyToRent.Model == car)
                         {
                             id = carReadyToRent.ID;
-                            PostRentCar("http://localhost:8080/rent/car/" + id, Token, json);
+                            PostRentCar(address+"rent/car/" + id, Token, json);
                             listCar.Items.Clear();
                             listCar.Items.Refresh();
                             InitializeDataGrid();
@@ -127,15 +127,14 @@ namespace CarRentalClient
         {
             allRentedCars.IsEnabled = true;
             allRentedCars.IsSelected = true;
-            List<RentedCars> rentedCars;
-            rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
+            List<RentedCars> rentedCars = RequestToRentedCarsList();
             dataGridRentings.ItemsSource = rentedCars;
         }
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            List<RentedCars> rentedCars;
-            rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
+            List<RentedCars> rentedCars = RequestToRentedCarsList();
             List<RentedCars> actualRentedCars = new List<RentedCars>();
+            if(rentedCars!=null)
             foreach(RentedCars rented in rentedCars)
             {
                 if(rented.RentEndDate > DateTimeOffset.Now)
@@ -149,8 +148,7 @@ namespace CarRentalClient
         }
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            List<RentedCars> rentedCars;
-            rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
+            List<RentedCars> rentedCars = RequestToRentedCarsList();
             dataGridRentings.ItemsSource = rentedCars;
         }
 
@@ -158,8 +156,8 @@ namespace CarRentalClient
         {
             returnCarTab.IsEnabled = true;
             returnCarTab.IsSelected = true;
-            List<RentedCars> rentedCars;
-            rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
+            List<RentedCars> rentedCars = RequestToRentedCarsList();
+            if(rentedCars!=null)
             foreach(RentedCars rentedCar in rentedCars)
             {
                 if(rentedCar.RentEndDate>DateTimeOffset.Now)
@@ -182,14 +180,13 @@ namespace CarRentalClient
                 String car = comboBoxReturnCar.SelectedItem.ToString();
            
             long id;
-            List<RentedCars> rentedCars;
-            rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
+                List<RentedCars> rentedCars = RequestToRentedCarsList();
             foreach (RentedCars rentedCar in rentedCars)
             {
                 if(rentedCar.Mark + " " + rentedCar.Model + " " + rentedCar.RegisterName == car&&rentedCar.RentEndDate>DateTimeOffset.Now)
                 {
                     id = rentedCar.IDRent;
-                    DeleteRequest("http://localhost:8080/rent/return/" + id, Token);
+                    DeleteRequest(address+"rent/return/" + id, Token);
                     mainMenu.IsSelected = true;
                     comboBoxReturnCar.Items.Clear();
                     returnCarTab.IsEnabled = false;
@@ -202,9 +199,17 @@ namespace CarRentalClient
                 MessageBox.Show("You have to select some car");
         }
 
+        public List<RentedCars> RequestToRentedCarsList()
+        {
+            if (GetCarsReadyToRent(address+"rent/", Token).Contains("engine")){
+                return JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent("http://localhost:8080/rent/", Token));
+            }
+            else
+                return null;
+        }
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            DeleteRequest("http://localhost:8080/sign-out", Token);
+            DeleteRequest(address+"sign-out", Token);
             LoginScreen login = new LoginScreen();
             login.InitializeComponent();
             login.Show();
