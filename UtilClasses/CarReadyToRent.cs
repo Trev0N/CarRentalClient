@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CarRentalClient
-{
+{/// <summary>
+/// Klasa pozwalajaca zserializowac dane dla CarReadyToRent
+/// </summary>
     class CarReadyToRent
     {
         public long ID { get; }
