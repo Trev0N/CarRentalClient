@@ -159,6 +159,7 @@ namespace CarRentalClient
             List<RentedCars> rentedCars;
             rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent(Address+"rent/", Token));
             List<RentedCars> actualRentedCars = new List<RentedCars>();
+            if(rentedCars!=null)
             foreach(RentedCars rented in rentedCars)
             {
                 if(rented.RentEndDate > DateTimeOffset.Now)
@@ -188,6 +189,7 @@ namespace CarRentalClient
             returnCarTab.IsSelected = true;
             List<RentedCars> rentedCars;
             rentedCars = JsonConvert.DeserializeObject<List<RentedCars>>(GetCarsReadyToRent(Address+"rent/", Token));
+            if(rentedCars!=null)
             foreach(RentedCars rentedCar in rentedCars)
             {
                 if(rentedCar.RentEndDate>DateTimeOffset.Now)
