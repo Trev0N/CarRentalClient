@@ -45,7 +45,7 @@ namespace CarRentalClient
         /// <param name="userName">Nazwa użytkownika</param>
         /// <param name="password">Hasło użytkownika</param>
         /// <returns>Zwraca string token</returns>
-        static string GetToken(string url, string userName, string password)
+        public static string GetToken(string url, string userName, string password)
         {
             
             var pairs = new List<KeyValuePair<string, string>>
@@ -130,10 +130,11 @@ namespace CarRentalClient
                 Token = response.Substring(17, 36);
                if (GetRole(Address+"user/isadmin", Token) == "true")
                 {
-                    MainWindow mainWindow = new MainWindow(Token);
+                        MainWindow mainWindow = new MainWindow(Token);
                     mainWindow.Show();
                     mainWindow.InitializeComponent();
                     mainWindow.TextBlockFormatting();
+                        mainWindow.CenterWindowOnScreen();
                     this.Close();
                 }
                 else

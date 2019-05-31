@@ -8,7 +8,7 @@ namespace CarRentalClient.UtilClasses
 {/// <summary>
 /// Klasa pozwalajaca zserializowac dane dla CarDetail
 /// </summary>
-    class CarDetail
+    public class CarDetail
     {
         public long CarID { get; }
 

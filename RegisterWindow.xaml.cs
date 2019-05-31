@@ -48,7 +48,7 @@ namespace CarRentalClient
         /// <param name="url">adres serwera</param>
         /// <param name="Json">dane w JSON</param>
         /// <returns></returns>
-        static Boolean PostRegister(string url, string Json)
+        public static Boolean PostRegister(string url, string Json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.ContentType = "application/json";
@@ -81,25 +81,30 @@ namespace CarRentalClient
         /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            String Json = 
-   "{  \"firstName\": \""+firstName.Text+"\","
- + " \"lastName\": \""+lastName.Text+"\","
- + " \"login\": \""+login.Text+"\","
- + " \"mail\": \""+mail.Text+"\","
- + " \"password\": \""+password.Password+"\","
- + " \"recaptcha\": \"ABCDEFGH\""
- +"}";
-
-            if (PostRegister(Address+"user/sign-in", Json).Equals(true))
+            if (firstName.Text != "" && lastName.Text != "" && login.Text != "" && mail.Text != "" && password.Password != "")
             {
+                String Json =
+       "{  \"firstName\": \"" + firstName.Text + "\","
+     + " \"lastName\": \"" + lastName.Text + "\","
+     + " \"login\": \"" + login.Text + "\","
+     + " \"mail\": \"" + mail.Text + "\","
+     + " \"password\": \"" + password.Password + "\","
+     + " \"recaptcha\": \"ABCDEFGH\""
+     + "}";
 
-                LoginScreen loginScreen = new LoginScreen();
-                loginScreen.InitializeComponent();
-                loginScreen.txtUsername = login;
-                loginScreen.txtPassword = password;
-                loginScreen.Login();
-                this.Close();
+                if (PostRegister(Address + "user/sign-in", Json).Equals(true))
+                {
+
+                    LoginScreen loginScreen = new LoginScreen();
+                    loginScreen.InitializeComponent();
+                    loginScreen.txtUsername = login;
+                    loginScreen.txtPassword = password;
+                    loginScreen.Login();
+                    this.Close();
+                }
             }
+            else
+                MessageBox.Show("You have to complete all fields");
         }
         /// <summary>
         /// Obsługa guzika powrotu do ekranu logowania
