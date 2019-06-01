@@ -21,14 +21,18 @@ namespace CarRentalClient
     /// Logika interakcji dla klasy RegisterScreen.xaml
     /// </summary>
     public partial class RegisterScreen : Window
-    {
-        private const string address = "https://carrental-wsiz.herokuapp.com/";
+    {/// <summary>
+     /// Pusty konstruktor centrujący okno i iniaclizujący okienko
+     /// </summary>
+        private const String Address = "https://carrental-wsiz.herokuapp.com/";
         public RegisterScreen()
         {
             InitializeComponent();
             CenterWindowOnScreen();
         }
-
+        /// <summary>
+        /// Metoda centrująca okienko na ekranie
+        /// </summary>
         private void CenterWindowOnScreen()
         {
             double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
@@ -38,7 +42,13 @@ namespace CarRentalClient
             this.Left = (screenWidth / 2) - (windowWidth / 2);
             this.Top = (screenHeight / 2) - (windowHeight / 2);
         }
-        static Boolean PostRegister(string url, string Json)
+        /// <summary>
+        /// Request POST do serwera z danymi nowego użytkownika w formacie JSON
+        /// </summary>
+        /// <param name="url">adres serwera</param>
+        /// <param name="Json">dane w JSON</param>
+        /// <returns></returns>
+        public static Boolean PostRegister(string url, string Json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.ContentType = "application/json";
@@ -66,29 +76,39 @@ namespace CarRentalClient
                 return false;
             }
         }
+        /// <summary>
+        /// Metoda przygotująca dane do serwera i wywołująca zapytanie
+        /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            String Json = 
-   "{  \"firstName\": \""+firstName.Text+"\","
- + " \"lastName\": \""+lastName.Text+"\","
- + " \"login\": \""+login.Text+"\","
- + " \"mail\": \""+mail.Text+"\","
- + " \"password\": \""+password.Password+"\","
- + " \"recaptcha\": \"ABCDEFGH\""
- +"}";
-
-            if (PostRegister(address+"user/sign-in", Json).Equals(true))
+            if (firstName.Text != "" && lastName.Text != "" && login.Text != "" && mail.Text != "" && password.Password != "")
             {
+                String Json =
+       "{  \"firstName\": \"" + firstName.Text + "\","
+     + " \"lastName\": \"" + lastName.Text + "\","
+     + " \"login\": \"" + login.Text + "\","
+     + " \"mail\": \"" + mail.Text + "\","
+     + " \"password\": \"" + password.Password + "\","
+     + " \"recaptcha\": \"ABCDEFGH\""
+     + "}";
 
-                LoginScreen loginScreen = new LoginScreen();
-                loginScreen.InitializeComponent();
-                loginScreen.txtUsername = login;
-                loginScreen.txtPassword = password;
-                loginScreen.login();
-                this.Close();
+                if (PostRegister(Address + "user/sign-in", Json).Equals(true))
+                {
+
+                    LoginScreen loginScreen = new LoginScreen();
+                    loginScreen.InitializeComponent();
+                    loginScreen.txtUsername = login;
+                    loginScreen.txtPassword = password;
+                    loginScreen.Login();
+                    this.Close();
+                }
             }
+            else
+                MessageBox.Show("You have to complete all fields");
         }
-
+        /// <summary>
+        /// Obsługa guzika powrotu do ekranu logowania
+        /// </summary>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             LoginScreen loginScreen = new LoginScreen();

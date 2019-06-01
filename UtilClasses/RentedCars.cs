@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CarRentalClient
-{
-    public class RentedCars
+{/// <summary>
+/// Klasa pozwalajaca zserializowac dane dla RentedCars
+/// </summary>
+    class RentedCars
     {
         public long IDRent;
 

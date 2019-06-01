@@ -25,7 +25,7 @@ namespace CarRentalClient
     public partial class LoginScreen : Window
     {
 
-        public String address = "https://carrental-wsiz.herokuapp.com/";
+        private static String Address = "https://carrental-wsiz.herokuapp.com/";
 
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace CarRentalClient
         /// <param name="userName">Nazwa użytkownika</param>
         /// <param name="password">Hasło użytkownika</param>
         /// <returns>Zwraca string token</returns>
-        static string GetToken(string url, string userName, string password)
+        public static string GetToken(string url, string userName, string password)
         {
             
             var pairs = new List<KeyValuePair<string, string>>
@@ -73,7 +73,9 @@ namespace CarRentalClient
             
 
         }
-
+        /// <summary>
+        /// Metoda centrująca okienka na środku ekranu 
+        /// </summary>
         private void CenterWindowOnScreen()
         {
             double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
@@ -85,7 +87,12 @@ namespace CarRentalClient
         }
 
 
-        
+        /// <summary>
+        /// Metoda, która sprawdza czy dany uzytkownik ma role admina poprzez wysyłanie requesta
+        /// </summary>
+        /// <param name="url">adres serwera</param>
+        /// <param name="Token">token z logowania</param>
+        /// <returns>prawda jesli admin</returns>
         static string GetRole(string url, string Token)
         {
 
@@ -101,29 +108,33 @@ namespace CarRentalClient
 
 
         }
-
+        /// <summary>
+        /// Obsługa guzika 
+        /// </summary>
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            login();
+            Login();
             
         }
-        public void login()
+        /// <summary>
+        /// Metoda logująca użytkownika do serwisu poprzez requesta
+        /// </summary>
+        public void Login()
         {
-            String response = GetToken(address + "api/login", txtUsername.Text, txtPassword.Password);
-            //String response = GetToken("http://localhost:8080/api/login", txtUsername.Text, txtPassword.Password);
+            String response = GetToken(Address + "api/login", txtUsername.Text, txtPassword.Password);
             String Token;
             if(response!=null)
             if (response.Contains("access_token"))
             {
 
                 Token = response.Substring(17, 36);
-               if (GetRole(address+"user/isadmin", Token) == "true")
-              //if (GetRole("http://localhost:8080/user/isadmin", Token) == "true")
+               if (GetRole(Address+"user/isadmin", Token) == "true")
                 {
-                    MainWindow mainWindow = new MainWindow(Token);
+                        MainWindow mainWindow = new MainWindow(Token);
                     mainWindow.Show();
                     mainWindow.InitializeComponent();
                     mainWindow.TextBlockFormatting();
+                        mainWindow.CenterWindowOnScreen();
                     this.Close();
                 }
                 else
@@ -138,7 +149,9 @@ namespace CarRentalClient
             else
                 MessageBox.Show("Wrong login or password");
         }
-
+        /// <summary>
+        /// Przełączenie do okienka rejestracji
+        /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RegisterScreen registerScreen = new RegisterScreen();

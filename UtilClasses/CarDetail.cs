@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CarRentalClient.UtilClasses
-{
-    class CarDetail
+{/// <summary>
+/// Klasa pozwalajaca zserializowac dane dla CarDetail
+/// </summary>
+    public class CarDetail
     {
         public long CarID { get; }
 

@@ -26,7 +26,7 @@ namespace CarRentalClient
 
 
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Logika dla okna panelu administratora
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -34,26 +34,36 @@ namespace CarRentalClient
         private String Token;
         private const string address = "https://carrental-wsiz.herokuapp.com/";
 
-
+        /// <summary>
+        /// Konstruktor klasy z tokenem aby moc przekazac z okna do okna token potrzebny do pracy aplikacji
+        /// </summary>
+        /// <param name="Token">zawiera token do uzyskania zasobow serwera</param>
         public MainWindow(string Token)
         {
             this.Token = Token;
         }
-
+        /// <summary>
+        /// Pusty konstruktor iniciujacy okno aplikacji
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
             TextBlockFormatting();
+            CenterWindowOnScreen();
         }
 
-
+        /// <summary>
+        /// Uzupełnia datagrid danymi z serwera
+        /// </summary>
         public void TextBlockFormatting()
         {
-            CenterWindowOnScreen();
             List<Car> car = RequestToListCar();
             myDataGrid.ItemsSource = car;
         }
-
+        /// <summary>
+        /// Zapytanie GET do serwera, aby uzyskać potrzebne informacje
+        /// </summary>
+        /// <returns>liste samochodów</returns>
         public List<Car> RequestToListCar()
         {
             if (GetRequest(address + "car/", Token).Contains("mark"))
@@ -62,7 +72,9 @@ namespace CarRentalClient
                 return null;
         }
 
-
+        /// <summary>
+        /// Centruje okienko na środku ekranu naszego komputera
+        /// </summary>
         public void CenterWindowOnScreen()
         {
             double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
@@ -72,7 +84,10 @@ namespace CarRentalClient
             this.Left = (screenWidth / 2) - (windowWidth / 2);
             this.Top = (screenHeight / 2) - (windowHeight / 2);
         }
-
+        /// <summary>
+        /// Zapytanie GET do serwera, aby uzyskać potrzebne informacje
+        /// </summary>
+        /// <returns>liste garaży</returns>
         public List<GarageList> RequestToGarageList()
         {
             if (GetRequest(address + "garage/", Token).Contains("name"))
@@ -84,12 +99,17 @@ namespace CarRentalClient
 
        
        //ADD/EDIT GARAGE TAB
+       /// <summary>
+       /// Wypełnia danymi datagrid dla garaży
+       /// </summary>
         public void InitializeAddGarageTab()
         {
             List<GarageList> garageList = RequestToGarageList();
             addGarageDataGrid.ItemsSource=garageList;
         }
-
+        /// <summary>
+        /// Kliknięcie tego guzika pobiera wszystkie dane z całego formularza i wysyła je PUT-em (edycja) lub POST-em (tworzenie) do serwera
+        /// </summary>
         public void Button_Click(object sender, RoutedEventArgs e)
         {
             String Name = addGarageName.Text;
@@ -146,7 +166,9 @@ namespace CarRentalClient
 
 
             //Add/edit car
-
+            /// <summary>
+            /// Wypełnia datagrid dla samochodów danymi
+            /// </summary>
         public void InitializeAddCarTab()
         {
              List<Car> cars = RequestToListCar();
@@ -157,7 +179,9 @@ namespace CarRentalClient
 
         }
 
-
+        /// <summary>
+        /// Otwiera zakladke dodawania/edycji samochodu
+        /// </summary>
         public void Button_Create_Car(object sender, RoutedEventArgs e)
         {
             addCarTab.IsEnabled = true;
@@ -165,14 +189,18 @@ namespace CarRentalClient
             InitializeAddCarTab();
         }
 
-
+        /// <summary>
+        /// Otwiera zakladke usuwania samochodu
+        /// </summary>
         public void Button_Delete_Car(object sender, RoutedEventArgs e)
         {
             deleteCarTab.IsEnabled = true;
             deleteCarTab.IsSelected = true;
             InitializeDeleteCarComboBox();
         }
-
+        /// <summary>
+        /// Inicjuje combobox do usuniecia samochodu
+        /// </summary>
         public void InitializeDeleteCarComboBox()
         {
             deleteCarComboBox.Items.Clear();
@@ -186,7 +214,9 @@ namespace CarRentalClient
             }
             
         }
-
+        /// <summary>
+        /// Otwiera zakladke usuwania garażu oraz inicjuje combobox
+        /// </summary>
         public void Button_Delete_Garage(object sender, RoutedEventArgs e)
         {
             deleteGarageTab.IsEnabled = true;
@@ -197,7 +227,9 @@ namespace CarRentalClient
         }
 
 
-
+        /// <summary>
+        /// Otwiera zakladke tworzenia/edycji garazu, wraz z zainicjalizowaniem wszystkich potrzebnych komponentow
+        /// </summary>
         public void Button_Add_Garage(object sender, RoutedEventArgs e)
         {
             addGarageTab.IsEnabled = true;
@@ -205,7 +237,9 @@ namespace CarRentalClient
             InitializeAddGarageTab();
         }
 
-
+        /// <summary>
+        /// Potrzebna logika do obsłużenia wylogowywania z naszego serwisu, wysyłamy token do naszego serwera metodą DELETE
+        /// </summary>
         public void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             DeleteRequest(address+"sign-out", Token);
@@ -217,7 +251,10 @@ namespace CarRentalClient
 
         //REQUESTS
 
-
+            /// <summary>
+            /// Templatka do requesta GET do naszego serwera
+            /// </summary>
+            /// <returns>zwraca jsona w stringu</returns>
         public static string GetRequest(string url, string Token)
         {
 
@@ -232,7 +269,9 @@ namespace CarRentalClient
 
 
         }
-
+        /// <summary>
+        /// Templatka do requesta POST do naszego serwera
+        /// </summary>
         public void PostRequest(String url, String token, String json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -256,7 +295,9 @@ namespace CarRentalClient
 
         }
 
-
+        /// <summary>
+        /// Templatka do requesta PUT do naszego serwera
+        /// </summary>
         public void PutRequest(String url, String token, String json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -277,7 +318,11 @@ namespace CarRentalClient
                 var result = streamReader.ReadToEnd();
             }
             }
-
+        /// <summary>
+        /// Templatka do requesta DELETE do naszego serwera
+        /// </summary>
+        /// <param name="url">adres do serwera</param>
+        /// <param name="Token">token z logowania</param>
         static string DeleteRequest(string url, string Token)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
@@ -291,7 +336,9 @@ namespace CarRentalClient
         }
 
 
-
+        /// <summary>
+        /// Wybranie rekordu w datagridzie skutkuje uzupełnieniem formularza tymi danymi
+        /// </summary>
         private void AddGarageDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string text=null;
@@ -300,7 +347,7 @@ namespace CarRentalClient
                 text = addGarageDataGrid.SelectedItem.ToString();
             }
             List<GarageList> garageList;
-            garageList = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest("http://localhost:8080/garage/", Token));
+            garageList = JsonConvert.DeserializeObject<List<GarageList>>(GetRequest(address+"garage/", Token));
             foreach(GarageList garage in garageList)
             {
                 if (garage.ToString().Equals(text))
@@ -312,7 +359,9 @@ namespace CarRentalClient
 
             }
         }
-
+        /// <summary>
+        /// Obsługa usuwania garażu, tzn request DELETE do serwera z ID garażu
+        /// </summary>
         private void Delete_Garage_Click(object sender, RoutedEventArgs e)
         {
             String garage = deleteGarageComboBox.SelectedItem.ToString();
@@ -329,7 +378,9 @@ namespace CarRentalClient
                 }
             }
         }
-
+        /// <summary>
+        /// Metoda która przygotowuje JSON'a i wysyła request'a POST do serwera
+        /// </summary>
         private void AddCarButton_Click(object sender, RoutedEventArgs e)
         { if (registerName.Text != "" && mark.Text != "" && model.Text != "" && engine.Text != "" && power.Text != "" && garageComboBox.Text != "")
             {
@@ -386,7 +437,9 @@ namespace CarRentalClient
             else
                 MessageBox.Show("You have to complete all fields");
         }
-
+        /// <summary>
+        ///  Wybranie rekordu w datagridzie skutkuje uzupełnieniem formularza tymi danymi
+        /// </summary>
         private void CarDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -413,7 +466,9 @@ namespace CarRentalClient
                 }
             }
         }
-
+        /// <summary>
+        /// Metoda który wyszukuje jaki chcemy pojazd usunąć i wysyła requesta DELETE do serwera
+        /// </summary>
         private void DeleteCarButton_Click(object sender, RoutedEventArgs e)
         {
             String carString = deleteCarComboBox.SelectedItem.ToString();
@@ -429,14 +484,18 @@ namespace CarRentalClient
                 }
             }
         }
-
+        /// <summary>
+        /// Metoda do obsługi przycisku, który przełącza widok na setcardetail 
+        /// </summary>
         private void SetCarDetailsButton_Click(object sender, RoutedEventArgs e)
         {
             setCarDetailsTab.IsEnabled = true;
             setCarDetailsTab.IsSelected = true;
             InitailizeSetCarDetailDataGrid();
         }
-
+        /// <summary>
+        /// Metoda inicializująca okienko SetCarDetail 
+        /// </summary>
         public void InitailizeSetCarDetailDataGrid()
         {
             setCarDetailCarStatus.Items.Clear();
@@ -456,7 +515,9 @@ namespace CarRentalClient
                 setCarDetailCar.Items.Add(car.Mark + " " + car.Model + " " + car.RegisterName);
             }           
         }
-
+        /// <summary>
+        /// Metoda wysytworzaca JSON'a i wysyłająca go do serwera
+        /// </summary>
         private void SetCarDetails_Click(object sender, RoutedEventArgs e)
         {
             long carid=-1;
@@ -501,7 +562,9 @@ namespace CarRentalClient
             else
                 MessageBox.Show("You have to complete all fields");
         }
-
+        /// <summary>
+        ///  Wybranie rekordu w datagridzie skutkuje uzupełnieniem formularza tymi danymi
+        /// </summary>
         private void SetCarDetailsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             long carid = -1;
